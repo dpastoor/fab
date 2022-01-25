@@ -1,0 +1,68 @@
+# goreleaser.yml
+# Build customization
+project_name: fab
+
+release:
+  # in case there is an indicator for this in the tag e.g. v1.0.0-rc1
+  # If set to true, will mark the release as not ready for production.
+  # Default is false.
+  prerelease: auto
+  footer: |
+    ## Installation Instructions
+    ### Mac
+    first time:
+    ```
+    brew tap dpastoor/tap
+    brew install fab
+    ```
+    upgrade:
+    ```
+    brew upgrade fab
+    ```
+    ### Linux
+    ```
+    sudo wget https://github.com/dpastoor/fab/releases/download/{{ .Tag }}/fab_Linux_amd64.tar.gz -O /tmp/fab.tar.gz
+    sudo tar xzf /tmp/fab.tar.gz fab
+    sudo mv fab /usr/local/bin/fab
+    sudo chmod +x /usr/local/bin/fab
+    ```
+before:
+  # Templates for the commands to be ran.
+  hooks:
+  - go mod download
+
+builds:
+  - 
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+    - amd64
+    - arm64
+    goarm:
+    - "7"
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      amd64: x86_64
+    format_overrides:
+    - goos: windows
+      format: zip
+
+
+# goreleaser.yml
+brews:
+  # Repository to push the tap to.
+  -
+    tap:
+      owner: dpastoor 
+      name: homebrew-tap 
+    folder: Formula
+    goarm: "7"
