@@ -1,6 +1,10 @@
 package main
 
-import "github.com/dpastoor/fab/cmd"
+import (
+	"os"
+
+	"github.com/dpastoor/fab/cmd"
+)
 
 // https://goreleaser.com/cookbooks/using-main.version
 var (
@@ -10,5 +14,5 @@ var (
 )
 
 func main() {
-	cmd.Execute(version, commit, date)
+	cmd.Execute(version, os.Args[1:])
 }
