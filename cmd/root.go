@@ -51,6 +51,9 @@ func newRootCmd(version string) *rootCmd {
 		},
 	}
 	cmd.Version = version
+	// without this, the default version is like `cmd version <version>` so this
+	// will just print the version for simpler parsing
+	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 	cmd.PersistentFlags().Bool("no-strict", false, "no strict mode")
 	viper.BindPFlag("no-strict", cmd.PersistentFlags().Lookup("no-strict"))
 	cmd.PersistentFlags().String("loglevel", "info", "log level")
