@@ -1,5 +1,3 @@
-# goreleaser.yml
-# Build customization
 project_name: fab
 
 release:
@@ -55,9 +53,12 @@ archives:
     format_overrides:
     - goos: windows
       format: zip
+    files:
+      - README.md
+      - LICENSE
+      - completions/*
+      - manpages/*   
 
-
-# goreleaser.yml
 brews:
   # Repository to push the tap to.
   -
@@ -66,3 +67,40 @@ brews:
       name: homebrew-tap 
     folder: Formula
     goarm: "7"
+    test: |
+      system "#{bin}/fab -v"
+    install: |-
+      bin.install "fab"
+      bash_completion.install "completions/fab.bash" => "fab"
+      zsh_completion.install "completions/fab.zsh" => "_fab"
+      fish_completion.install "completions/fab.fish"
+      man1.install "manpages/fab.1.gz"
+
+publishers:
+  - name: fury.io
+    ids:
+    - packages
+    env:
+    - 'FURY_TOKEN={{ .Env.FURY_TOKEN }}'
+    cmd: ./scripts/fury-upload.sh {{ .ArtifactName }}
+
+nfpms:
+  - file_name_template: '{{ .ConventionalFileName }}'
+    id: packages
+    homepage:  https://github.com/dpastoor/fab
+    description: Fabricate projects, fabulously 
+    maintainer: Devin Pastoor <devin.pastoor@gmail.com>
+    license: MIT
+    contents:
+      - src: ./completions/fab.bash
+        dst: /etc/bash_completion.d/fab
+      - src: ./completions/fab.fish
+        dst: /usr/share/fish/completions/fab.fish
+      - src: ./completions/fab.zsh
+        dst: /usr/local/share/zsh/site-functions/_fab
+      - src: ./manpages/fab.1.gz
+        dst: /usr/share/man/man1/fab.1.gz
+    formats:
+    - apk
+    - deb
+    - rpm
