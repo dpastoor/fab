@@ -2,3 +2,5 @@
 /vendor/*
 /dist/*
 scratch.go
+manpages
+completions/

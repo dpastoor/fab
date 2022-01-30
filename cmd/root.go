@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
+	"log"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -16,39 +15,54 @@ type settings struct {
 	loglevel string
 }
 
-var cfg settings
-
-var rootCmd = &cobra.Command{
-	Use:   "cmd",
-	Short: "`fab`ricate new projects in a `fab`ulous way",
+type rootCmd struct {
+	cmd *cobra.Command
+	cfg *settings
 }
 
-func Execute(version string, commit string, date string) {
-	rootCmd.Version = version
-	rootCmd.SetVersionTemplate("{{printf \"%s\\n\" .Version}}")
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+func Execute(version string, args []string) {
+	newRootCmd(version).Execute(args)
+}
+
+func (cmd *rootCmd) Execute(args []string) {
+	cmd.cmd.SetArgs(args)
+	if err := cmd.cmd.Execute(); err != nil {
+		log.Fatalf("failed with error: %s", err)
 	}
 }
 
-func init() {
-	rootCmd.AddCommand(newDebugCmd())
-	rootCmd.AddCommand(newGenerateCmd())
-	rootCmd.AddCommand(newConfigCmd())
-
-	// using viper so can take advantage of the casting and lookup capabilities of viper
-	// even if don't need some of the more advanced functionality
-	rootCmd.PersistentFlags().Bool("no-strict", false, "no strict mode")
-	viper.BindPFlag("no-strict", rootCmd.PersistentFlags().Lookup("no-strict"))
-	rootCmd.PersistentFlags().String("loglevel", "info", "log level")
-	viper.BindPFlag("loglevel", rootCmd.PersistentFlags().Lookup("loglevel"))
-	cobra.OnInitialize(initConfig)
-
-}
-
-func initConfig() {
+func setGlobalSettings(cfg *settings) {
 	cfg.strict = !viper.GetBool("no-strict")
 	cfg.loglevel = viper.GetString("loglevel")
 	setLogLevel(cfg.loglevel)
+}
+func newRootCmd(version string) *rootCmd {
+	root := &rootCmd{cfg: &settings{}}
+	cmd := &cobra.Command{
+		Use:   "cmd",
+		Short: "`fab`ricate new projects in a `fab`ulous way",
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			// need to set the config values here as the viper values
+			// will not be processed until Execute, so can't
+			// set them in the initializer.
+			// If persistentPreRun is used elsewhere, should
+			// remember to setGlobalSettings in the initializer
+			setGlobalSettings(root.cfg)
+		},
+	}
+	cmd.Version = version
+	// without this, the default version is like `cmd version <version>` so this
+	// will just print the version for simpler parsing
+	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
+	cmd.PersistentFlags().Bool("no-strict", false, "no strict mode")
+	viper.BindPFlag("no-strict", cmd.PersistentFlags().Lookup("no-strict"))
+	cmd.PersistentFlags().String("loglevel", "info", "log level")
+	viper.BindPFlag("loglevel", cmd.PersistentFlags().Lookup("loglevel"))
+	cmd.AddCommand(newDebugCmd(root.cfg))
+	cmd.AddCommand(newGenerateCmd())
+	cmd.AddCommand(newConfigCmd())
+	cmd.AddCommand(newManCmd().cmd)
+
+	root.cmd = cmd
+	return root
 }

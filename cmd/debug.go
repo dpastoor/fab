@@ -6,15 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func debugCmd(_ *cobra.Command, args []string) {
+func debugCmd(cfg *settings, args []string) {
 	fmt.Printf("%#v\n", cfg)
 }
 
-func newDebugCmd() *cobra.Command {
+func newDebugCmd(cfg *settings) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "debug",
 		Short: "debug",
-		Run:   debugCmd,
+		Run: func(_ *cobra.Command, args []string) {
+			debugCmd(cfg, args)
+		},
 	}
 	return cmd
 }
