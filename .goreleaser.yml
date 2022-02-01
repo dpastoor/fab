@@ -24,10 +24,12 @@ release:
     sudo mv fab /usr/local/bin/fab
     sudo chmod +x /usr/local/bin/fab
     ```
+
 before:
-  # Templates for the commands to be ran.
   hooks:
-  - go mod download
+    - go mod tidy
+    - ./scripts/completions.sh
+    - ./scripts/manpages.sh
 
 builds:
   - 
