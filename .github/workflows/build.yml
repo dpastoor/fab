@@ -14,7 +14,7 @@ permissions:
   packages: write
 
 jobs:
-  goreleaser-check-pkgs:
+  fab-check-pkgs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
