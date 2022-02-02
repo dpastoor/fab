@@ -90,11 +90,6 @@ tasks:
     cmds:
       - task: fab:test:pkg
         vars:
-          Platform: '386'
-          Image: centos:centos7
-          Cmd: '{{.rpm}} fab-*.i386.rpm'
-      - task: fab:test:pkg
-        vars:
           Platform: 'amd64'
           Image: fedora
           Cmd: '{{.rpm}} fab-*.x86_64.rpm'
@@ -135,11 +130,6 @@ tasks:
     vars:
       apk: 'apk add --allow-untrusted -U'
     cmds:
-      - task: fab:test:pkg
-        vars:
-          Platform: '386'
-          Image: alpine
-          Cmd: '{{.apk}} fab*_x86.apk'
       - task: fab:test:pkg
         vars:
           Platform: 'amd64'

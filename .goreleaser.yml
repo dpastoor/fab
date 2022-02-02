@@ -42,6 +42,7 @@ builds:
     goarch:
     - amd64
     - arm64
+    - arm
     goarm:
     - "7"
 
@@ -106,3 +107,6 @@ nfpms:
     - apk
     - deb
     - rpm
+
+snapshot:
+  name_template: '{{ incpatch .Version }}-next'

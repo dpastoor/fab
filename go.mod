@@ -8,6 +8,8 @@ require (
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/gobuffalo/plush v3.8.3+incompatible
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/muesli/mango v0.0.0-20220118122812-f367188b892e
+	github.com/muesli/roff v0.1.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.0
@@ -45,8 +47,6 @@ require (
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/microcosm-cc/bluemonday v1.0.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
-	github.com/muesli/mango v0.0.0-20220118122812-f367188b892e // indirect
-	github.com/muesli/roff v0.1.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
