@@ -39,7 +39,7 @@ func setGlobalSettings(cfg *settings) {
 func newRootCmd(version string) *rootCmd {
 	root := &rootCmd{cfg: &settings{}}
 	cmd := &cobra.Command{
-		Use:   "cmd",
+		Use:   "fab",
 		Short: "`fab`ricate new projects in a `fab`ulous way",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			// need to set the config values here as the viper values
