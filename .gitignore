@@ -4,3 +4,8 @@
 scratch.go
 manpages
 completions/
+# stuff generated in CI and will cause goreleaser to fail
+# with dirty state
+.task/
+coverage.txt
+fab
